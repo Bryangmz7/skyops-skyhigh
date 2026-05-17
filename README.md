@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkyOps — Sky High SAC
 
-## Getting Started
+Sistema operativo interno que reemplaza la coordinación por WhatsApp. Centraliza pedidos a proveedores, órdenes de clientes y entregas con trazabilidad completa.
 
-First, run the development server:
+## Stack
+- **Frontend/Backend:** Next.js 14 (App Router) + TypeScript
+- **UI:** Tailwind CSS + shadcn/ui
+- **Base de datos:** Supabase PostgreSQL con Row Level Security
+- **Auth:** Supabase Auth
+- **PWA:** Offline-first con IndexedDB para operativos en campo
+
+## Módulos
+| Módulo | Ruta | Acceso |
+|---|---|---|
+| Dashboard | `/dashboard` | Todos |
+| Pedidos Proveedor | `/pedidos-proveedor` | Ventas, Gerencia |
+| OC Clientes | `/ordenes-cliente` | Ventas, Gerencia |
+| Programación Entregas | `/almacen/programacion` | Jefe Almacén, Gerencia |
+| Mis Entregas (móvil) | `/almacen/mis-entregas` | Operativos |
+| Notificaciones | `/notificaciones` | Todos |
+| Admin Usuarios | `/admin/usuarios` | Gerencia |
+| Auditoría | `/admin/auditoria` | Gerencia |
+
+## Setup local
 
 ```bash
+npm install
+# Completar variables en .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variables de entorno (.env.local)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+RESEND_API_KEY=
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+VAPID_SUBJECT=mailto:admin@skyhighsac.com
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Base de datos
 
-## Learn More
+Ejecutar `supabase/migrations/001_schema_inicial.sql` en el SQL Editor de Supabase.
 
-To learn more about Next.js, take a look at the following resources:
+## Reglas inmutables del sistema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. `delivery_timeline` es INMUTABLE — solo INSERT
+2. Jefe de Almacén no elimina ni modifica datos críticos
+3. Toda modificación queda en `audit_log`
+4. Usuarios se desactivan, nunca se eliminan
+5. Timestamps los pone el servidor
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Conectar repositorio a Vercel y configurar las variables de entorno en el panel.
