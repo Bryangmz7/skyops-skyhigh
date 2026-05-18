@@ -1,14 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+  themeColor: "#0066cc",
+};
+
 export const metadata: Metadata = {
   title: "SkyOps — Sky High SAC",
   description: "Sistema operativo interno de Sky High SAC",
   manifest: "/manifest.json",
-  themeColor: "#0066cc",
 };
 
 export default function RootLayout({
