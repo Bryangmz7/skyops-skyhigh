@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/client/supabase'
 import type { User, UserRole } from '@/types/database'
 
@@ -13,7 +13,8 @@ interface UseUserReturn {
 export function useUser(): UseUserReturn {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
+  // useRef evita re-crear el cliente en cada render
+  const supabase = useRef(createClient()).current
 
   useEffect(() => {
     async function loadUser() {
