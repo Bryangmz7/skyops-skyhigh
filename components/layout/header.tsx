@@ -3,6 +3,7 @@
 import { Bell, LogOut, User } from 'lucide-react'
 import { useUser } from '@/hooks/use-user'
 import { useOffline } from '@/hooks/use-offline'
+import { useNotifications } from '@/hooks/use-notifications'
 import { signOut } from '@/lib/server/actions/auth'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -19,6 +20,7 @@ const ROLE_LABELS: Record<string, string> = {
 export function Header() {
   const { user, role } = useUser()
   const { isOnline, pendingCount } = useOffline()
+  const { unreadCount } = useNotifications()
 
   return (
     <header className="h-14 border-b bg-white flex items-center justify-between px-6 flex-shrink-0">
@@ -36,9 +38,14 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Link href="/notificaciones">
+        <Link href="/notificaciones" className="relative">
           <Button variant="ghost" size="icon">
             <Bell size={18} />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </Button>
         </Link>
 

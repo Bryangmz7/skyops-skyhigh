@@ -21,7 +21,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="h-full">
-      <body className={`${inter.className} h-full antialiased`}>{children}</body>
+      <body className={`${inter.className} h-full antialiased`}>
+        {children}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function() {});
+              });
+            }
+          `
+        }} />
+      </body>
     </html>
   );
 }

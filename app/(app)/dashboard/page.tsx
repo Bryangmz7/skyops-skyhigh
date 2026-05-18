@@ -1,3 +1,5 @@
+export const revalidate = 60 // Revalidar KPIs cada 60 segundos
+
 import { getCurrentUser } from '@/lib/server/actions/auth'
 import { createClient } from '@/lib/server/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,6 +16,7 @@ export default async function DashboardPage() {
     { count: pedidosHoy },
     { count: entregasPendientes },
     { count: entregadasHoy },
+    { data: tiemposHoy },
   ] = await Promise.all([
     supabase
       .from('client_orders')
@@ -28,7 +31,28 @@ export default async function DashboardPage() {
       .select('*', { count: 'exact', head: true })
       .eq('event_type', 'finalizado')
       .gte('event_time', `${today}T00:00:00`),
+    // Calcular tiempo promedio: inicio → finalizado de hoy
+    supabase
+      .from('delivery_timeline')
+      .select('delivery_id, event_type, event_time')
+      .in('event_type', ['inicio', 'finalizado'])
+      .gte('event_time', `${today}T00:00:00`),
   ])
+
+  // Calcular tiempo promedio en minutos
+  let avgMinutes: number | null = null
+  if (tiemposHoy && tiemposHoy.length > 0) {
+    const byDelivery: Record<string, { inicio?: string; finalizado?: string }> = {}
+    for (const ev of tiemposHoy) {
+      if (!byDelivery[ev.delivery_id]) byDelivery[ev.delivery_id] = {}
+      if (ev.event_type === 'inicio') byDelivery[ev.delivery_id].inicio = ev.event_time
+      if (ev.event_type === 'finalizado') byDelivery[ev.delivery_id].finalizado = ev.event_time
+    }
+    const diffs = Object.values(byDelivery)
+      .filter((d) => d.inicio && d.finalizado)
+      .map((d) => (new Date(d.finalizado!).getTime() - new Date(d.inicio!).getTime()) / 60000)
+    if (diffs.length > 0) avgMinutes = Math.round(diffs.reduce((a, b) => a + b, 0) / diffs.length)
+  }
 
   const now = new Date()
   const greeting = now.getHours() < 12 ? 'Buenos días' : now.getHours() < 18 ? 'Buenas tardes' : 'Buenas noches'
@@ -79,8 +103,17 @@ export default async function DashboardPage() {
             <Clock size={18} className="text-purple-500" />
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">—</p>
-            <p className="text-xs text-gray-400">Sin datos hoy</p>
+            {avgMinutes !== null ? (
+              <>
+                <p className="text-3xl font-bold">{avgMinutes}m</p>
+                <p className="text-xs text-gray-400">Promedio de hoy</p>
+              </>
+            ) : (
+              <>
+                <p className="text-3xl font-bold">—</p>
+                <p className="text-xs text-gray-400">Sin entregas hoy</p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
