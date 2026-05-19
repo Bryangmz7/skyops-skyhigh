@@ -1,5 +1,7 @@
 import { openDB, DBSchema, IDBPDatabase } from 'idb'
 
+// Nota: el index 'by-synced' usa 0/1 en vez de boolean porque IndexedDB
+// no admite boolean como IDBValidKey (límite del estándar Web).
 interface SkyOpsDB extends DBSchema {
   pending_actions: {
     key: number
@@ -8,9 +10,9 @@ interface SkyOpsDB extends DBSchema {
       action_type: string
       payload: object
       client_timestamp: string
-      synced: boolean
+      synced: 0 | 1
     }
-    indexes: { 'by-synced': boolean }
+    indexes: { 'by-synced': number }
   }
 }
 
@@ -37,20 +39,20 @@ export async function addPendingAction(action_type: string, payload: object) {
     action_type,
     payload,
     client_timestamp: new Date().toISOString(),
-    synced: false,
+    synced: 0,
   })
 }
 
 export async function getPendingActions() {
   const database = await getDB()
-  return database.getAllFromIndex('pending_actions', 'by-synced', false)
+  return database.getAllFromIndex('pending_actions', 'by-synced', 0)
 }
 
 export async function markActionSynced(id: number) {
   const database = await getDB()
   const action = await database.get('pending_actions', id)
   if (action) {
-    action.synced = true
+    action.synced = 1
     await database.put('pending_actions', action)
   }
 }

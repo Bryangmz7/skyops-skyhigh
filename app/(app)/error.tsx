@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 export default function AppError({
   error,
@@ -29,12 +30,10 @@ export default function AppError({
           </p>
         </div>
         <div className="flex gap-3 justify-center">
-          <Button variant="outline" asChild>
-            <Link href="/dashboard">
-              <Home size={16} className="mr-2" />
-              Dashboard
-            </Link>
-          </Button>
+          <Link href="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>
+            <Home size={16} className="mr-2" />
+            Dashboard
+          </Link>
           <Button onClick={reset} className="bg-sky-600 hover:bg-sky-700">
             <RefreshCw size={16} className="mr-2" />
             Reintentar
