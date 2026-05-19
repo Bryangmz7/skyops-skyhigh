@@ -40,7 +40,7 @@ export function ClientOrderForm({ onSuccess }: { onSuccess?: () => void }) {
             type="button"
             onClick={() => setDocType(type)}
             className={`px-5 py-2 text-sm font-medium transition-colors ${
-              docType === type ? 'bg-[#0066cc] text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
+              docType === type ? 'bg-sky-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
             }`}
           >
             {type === 'oc' ? 'Orden de Compra' : 'Cotización'}
@@ -75,7 +75,7 @@ export function ClientOrderForm({ onSuccess }: { onSuccess?: () => void }) {
 
       <div className="flex justify-end gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onSuccess}>Cancelar</Button>
-        <Button type="submit" className="bg-[#0066cc] hover:bg-[#0052a3]" disabled={loading}>
+        <Button type="submit" className="bg-sky-600 hover:bg-sky-700" disabled={loading}>
           {loading ? 'Guardando…' : `Crear ${docType === 'oc' ? 'OC' : 'Cotización'}`}
         </Button>
       </div>

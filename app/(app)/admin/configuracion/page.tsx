@@ -18,7 +18,7 @@ export default async function ConfiguracionPage() {
         <Card>
           <CardHeader className="flex flex-row items-center gap-3 pb-2">
             <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Bell size={18} className="text-[#0066cc]" />
+              <Bell size={18} className="text-sky-600" />
             </div>
             <div>
               <CardTitle className="text-base">Notificaciones Push</CardTitle>
@@ -73,7 +73,7 @@ export default async function ConfiguracionPage() {
             <div className="space-y-1.5 text-xs text-gray-600">
               {['gerente','asistente','ventas','jefe_almacen','operativo','facturacion'].map(r => (
                 <div key={r} className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0066cc]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
                   <span className="capitalize">{r.replace('_',' ')}</span>
                 </div>
               ))}

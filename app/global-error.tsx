@@ -29,7 +29,7 @@ export default function GlobalError({
             <p className="text-gray-500 text-sm">
               Ocurrió un error inesperado. Por favor intenta de nuevo.
             </p>
-            <Button onClick={reset} className="bg-[#0066cc] hover:bg-[#0052a3]">
+            <Button onClick={reset} className="bg-sky-600 hover:bg-sky-700">
               <RefreshCw size={16} className="mr-2" />
               Reintentar
             </Button>

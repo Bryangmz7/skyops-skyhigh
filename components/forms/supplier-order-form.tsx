@@ -77,7 +77,7 @@ export function SupplierOrderForm({ onSuccess }: { onSuccess?: () => void }) {
 
       <div className="flex justify-end gap-3 pt-2">
         <Button type="button" variant="outline" onClick={onSuccess}>Cancelar</Button>
-        <Button type="submit" className="bg-[#0066cc] hover:bg-[#0052a3]" disabled={loading}>
+        <Button type="submit" className="bg-sky-600 hover:bg-sky-700" disabled={loading}>
           {loading ? 'Guardando…' : 'Crear Pedido'}
         </Button>
       </div>

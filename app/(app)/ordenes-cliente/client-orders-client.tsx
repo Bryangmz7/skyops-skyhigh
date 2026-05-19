@@ -118,15 +118,15 @@ export function ClientOrdersClient({ orders, userRole }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex rounded-lg border overflow-hidden">
-          <button onClick={() => setView('table')} className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${view === 'table' ? 'bg-[#0066cc] text-white' : 'bg-white text-gray-600'}`}>
+          <button onClick={() => setView('table')} className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${view === 'table' ? 'bg-sky-600 text-white' : 'bg-white text-gray-600'}`}>
             <List size={14} /> Tabla
           </button>
-          <button onClick={() => setView('kanban')} className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${view === 'kanban' ? 'bg-[#0066cc] text-white' : 'bg-white text-gray-600'}`}>
+          <button onClick={() => setView('kanban')} className={`px-3 py-1.5 text-sm flex items-center gap-1.5 ${view === 'kanban' ? 'bg-sky-600 text-white' : 'bg-white text-gray-600'}`}>
             <LayoutGrid size={14} /> Kanban
           </button>
         </div>
         {canCreate && (
-          <Button className="bg-[#0066cc] hover:bg-[#0052a3]" onClick={() => setOpen(true)}>
+          <Button className="bg-sky-600 hover:bg-sky-700" onClick={() => setOpen(true)}>
             <Plus size={16} className="mr-2" /> Nueva OC
           </Button>
         )}

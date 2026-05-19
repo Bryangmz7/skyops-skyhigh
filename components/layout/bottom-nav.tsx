@@ -54,7 +54,7 @@ export function BottomNav() {
               href={item.href}
               className={cn(
                 'flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-colors relative',
-                active ? 'text-[#0066cc]' : 'text-gray-400'
+                active ? 'text-sky-600' : 'text-gray-400'
               )}
             >
               <div className="relative">

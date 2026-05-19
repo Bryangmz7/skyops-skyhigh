@@ -84,7 +84,7 @@ export function UsuariosClient({ users: initialUsers, departments }: Props) {
             className="pl-9"
           />
         </div>
-        <Button className="bg-[#0066cc] hover:bg-[#0052a3]" onClick={() => setOpen(true)}>
+        <Button className="bg-sky-600 hover:bg-sky-700" onClick={() => setOpen(true)}>
           <Plus size={16} className="mr-2" /> Crear Usuario
         </Button>
       </div>
@@ -172,7 +172,7 @@ export function UsuariosClient({ users: initialUsers, departments }: Props) {
             </div>
             <div className="flex gap-3 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={() => setOpen(false)}>Cancelar</Button>
-              <Button type="submit" className="flex-1 bg-[#0066cc] hover:bg-[#0052a3]" disabled={loading}>
+              <Button type="submit" className="flex-1 bg-sky-600 hover:bg-sky-700" disabled={loading}>
                 {loading ? 'Creando…' : 'Crear Usuario'}
               </Button>
             </div>

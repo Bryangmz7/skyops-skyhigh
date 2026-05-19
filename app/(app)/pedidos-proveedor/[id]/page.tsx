@@ -72,7 +72,7 @@ export default async function SupplierOrderDetailPage({ params }: { params: { id
                 href={order.file_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-[#0066cc] hover:underline text-sm"
+                className="flex items-center gap-2 text-sky-600 hover:underline text-sm"
               >
                 <FileText size={16} /> Ver documento adjunto
               </a>

@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
           {status === 'success' ? (
             <div className="text-center space-y-4">
               <p className="text-green-700 bg-green-50 p-3 rounded-lg text-sm">{message}</p>
-              <a href="/login" className="text-[#0066cc] hover:underline text-sm">
+              <a href="/login" className="text-sky-600 hover:underline text-sm">
                 Volver al login
               </a>
             </div>
@@ -60,13 +60,13 @@ export default function ForgotPasswordPage() {
               )}
               <Button
                 type="submit"
-                className="w-full bg-[#0066cc] hover:bg-[#0052a3]"
+                className="w-full bg-sky-600 hover:bg-sky-700"
                 disabled={status === 'loading'}
               >
                 {status === 'loading' ? 'Enviando…' : 'Enviar enlace'}
               </Button>
               <div className="text-center">
-                <a href="/login" className="text-sm text-[#0066cc] hover:underline">
+                <a href="/login" className="text-sm text-sky-600 hover:underline">
                   Volver al login
                 </a>
               </div>

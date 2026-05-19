@@ -57,13 +57,13 @@ export function MisEntregasClient({ allDeliveries, userId }: Props) {
       <div className="flex rounded-lg border overflow-hidden text-sm">
         <button
           onClick={() => setSoloMias(true)}
-          className={`flex-1 py-2 font-medium transition-colors ${soloMias ? 'bg-[#0066cc] text-white' : 'bg-white text-gray-600'}`}
+          className={`flex-1 py-2 font-medium transition-colors ${soloMias ? 'bg-sky-600 text-white' : 'bg-white text-gray-600'}`}
         >
           Asignadas a mí
         </button>
         <button
           onClick={() => setSoloMias(false)}
-          className={`flex-1 py-2 font-medium transition-colors ${!soloMias ? 'bg-[#0066cc] text-white' : 'bg-white text-gray-600'}`}
+          className={`flex-1 py-2 font-medium transition-colors ${!soloMias ? 'bg-sky-600 text-white' : 'bg-white text-gray-600'}`}
         >
           Ver todas
         </button>

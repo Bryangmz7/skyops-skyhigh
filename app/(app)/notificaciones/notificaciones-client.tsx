@@ -69,10 +69,10 @@ export function NotificacionesClient({ notifications, userId }: Props) {
                 </div>
                 <div className="flex items-center gap-2">
                   {!notif.is_read && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#0066cc] flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-sky-600 flex-shrink-0" />
                   )}
                   {notif.link && (
-                    <Link href={notif.link} className="text-[#0066cc] hover:text-[#0052a3]">
+                    <Link href={notif.link} className="text-sky-600 hover:text-sky-700">
                       <ExternalLink size={14} />
                     </Link>
                   )}

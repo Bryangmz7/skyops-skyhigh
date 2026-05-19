@@ -189,7 +189,7 @@ export function EntregaDetailClient({ delivery, timeline, userId }: Props) {
           <p className="font-semibold text-sm text-gray-700">Foto de guía sellada</p>
           {delivery.sealed_guide_photo_url && (
             <a href={delivery.sealed_guide_photo_url} target="_blank" rel="noopener noreferrer"
-              className="text-xs text-[#0066cc]">Ver foto</a>
+              className="text-xs text-sky-600">Ver foto</a>
           )}
         </div>
         <input ref={fileRef} type="file" accept="image/*" capture="environment"
@@ -213,7 +213,7 @@ export function EntregaDetailClient({ delivery, timeline, userId }: Props) {
             {timeline.map((event, i) => (
               <div key={event.id} className="flex gap-3 text-sm">
                 <div className="flex flex-col items-center">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#0066cc] mt-0.5 flex-shrink-0" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-sky-600 mt-0.5 flex-shrink-0" />
                   {i < timeline.length - 1 && <div className="w-0.5 flex-1 bg-gray-200 mt-1" />}
                 </div>
                 <div className="pb-3">
@@ -225,7 +225,7 @@ export function EntregaDetailClient({ delivery, timeline, userId }: Props) {
                       href={`https://maps.google.com/?q=${event.gps_lat},${event.gps_lng}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-[#0066cc] flex items-center gap-1 mt-0.5"
+                      className="text-xs text-sky-600 flex items-center gap-1 mt-0.5"
                     >
                       <MapPin size={10} /> Ver en mapa
                     </a>

@@ -78,7 +78,7 @@ export function ProgramacionClient({ deliveries, operativos, userRole }: Props) 
                       <div
                         key={delivery.id}
                         onClick={() => canSchedule && setSelected(delivery)}
-                        className={`bg-white rounded-lg border p-3 transition-all ${canSchedule ? 'cursor-pointer hover:shadow-sm hover:border-[#0066cc]' : ''}`}
+                        className={`bg-white rounded-lg border p-3 transition-all ${canSchedule ? 'cursor-pointer hover:shadow-sm hover:border-sky-600' : ''}`}
                       >
                         <p className="text-xs font-mono text-gray-400">{oc?.internal_number}</p>
                         <p className="text-sm font-medium text-gray-900 truncate">{oc?.client_name}</p>
@@ -171,7 +171,7 @@ export function ProgramacionClient({ deliveries, operativos, userRole }: Props) 
                   <Label htmlFor="notes">Notas</Label>
                   <Textarea id="notes" name="notes" placeholder="Instrucciones adicionales…" defaultValue={selected.notes ?? ''} />
                 </div>
-                <Button type="submit" className="w-full bg-[#0066cc] hover:bg-[#0052a3]" disabled={loading}>
+                <Button type="submit" className="w-full bg-sky-600 hover:bg-sky-700" disabled={loading}>
                   {loading ? 'Guardando…' : 'Confirmar Programación'}
                 </Button>
               </form>
