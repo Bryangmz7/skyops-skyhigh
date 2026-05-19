@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, Search, FileSpreadsheet } from 'lucide-react'
 import * as XLSX from 'xlsx'
 
 interface DataTableProps<TData, TValue> {
@@ -61,32 +61,48 @@ export function DataTable<TData, TValue>({
     XLSX.writeFile(wb, `skyops_${exportFileName ?? 'export'}_${today}.xlsx`)
   }
 
+  const rowCount = table.getFilteredRowModel().rows.length
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3 flex-wrap">
-          <Input
-            placeholder={searchPlaceholder}
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-64"
-          />
+    <div className="space-y-3">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap flex-1">
+          <div className="relative max-w-xs w-full">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input
+              placeholder={searchPlaceholder}
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="pl-8 h-9 bg-white border-slate-200 focus-visible:ring-sky-500 text-sm"
+            />
+          </div>
           {toolbar}
         </div>
         {exportFileName && (
-          <Button variant="outline" size="sm" onClick={exportToExcel}>
-            <Download size={14} className="mr-2" /> Exportar Excel
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportToExcel}
+            className="h-9 border-slate-200 text-slate-600 hover:bg-slate-50 gap-1.5"
+          >
+            <FileSpreadsheet size={14} />
+            Exportar Excel
           </Button>
         )}
       </div>
 
-      <div className="rounded-lg border bg-white overflow-hidden">
+      {/* Table */}
+      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-gray-50">
+              <TableRow key={headerGroup.id} className="bg-slate-50 border-b border-slate-200 hover:bg-slate-50">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="font-semibold text-gray-700">
+                  <TableHead
+                    key={header.id}
+                    className="font-semibold text-slate-600 text-xs uppercase tracking-wide py-3"
+                  >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -95,19 +111,25 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-gray-50 transition-colors">
+              table.getRowModel().rows.map((row, i) => (
+                <TableRow
+                  key={row.id}
+                  className={`border-b border-slate-100 transition-colors hover:bg-sky-50/40 ${i % 2 === 0 ? '' : 'bg-slate-50/50'}`}
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.def, cell.getContext())}
+                    <TableCell key={cell.id} className="py-3 text-sm text-slate-700">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center py-12 text-gray-400">
-                  No hay registros
+                <TableCell colSpan={columns.length} className="text-center py-16">
+                  <div className="flex flex-col items-center gap-2 text-slate-400">
+                    <Search size={32} className="opacity-30" />
+                    <p className="text-sm">No hay registros</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -115,14 +137,31 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between text-sm text-gray-600">
-        <span>{table.getFilteredRowModel().rows.length} registros</span>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+      {/* Pagination */}
+      <div className="flex items-center justify-between text-sm text-slate-500">
+        <span>
+          <span className="font-medium text-slate-700">{rowCount}</span> registros
+        </span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="h-8 w-8 p-0 border-slate-200"
+          >
             <ChevronLeft size={14} />
           </Button>
-          <span>Pág. {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}</span>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          <span className="px-3 py-1 rounded-md bg-slate-100 text-xs font-medium min-w-[80px] text-center">
+            Pág. {table.getState().pagination.pageIndex + 1} / {Math.max(1, table.getPageCount())}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="h-8 w-8 p-0 border-slate-200"
+          >
             <ChevronRight size={14} />
           </Button>
         </div>

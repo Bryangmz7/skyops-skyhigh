@@ -1,10 +1,10 @@
-export const revalidate = 60 // Revalidar KPIs cada 60 segundos
+export const revalidate = 60
 
 import { getCurrentUser } from '@/lib/server/actions/auth'
 import { createClient } from '@/lib/server/supabase'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
-import { Package, Truck, CheckCircle, Clock } from 'lucide-react'
+import { Package, Truck, CheckCircle2, Clock, ArrowRight, Zap } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
@@ -31,7 +31,6 @@ export default async function DashboardPage() {
       .select('*', { count: 'exact', head: true })
       .eq('event_type', 'finalizado')
       .gte('event_time', `${today}T00:00:00`),
-    // Calcular tiempo promedio: inicio → finalizado de hoy
     supabase
       .from('delivery_timeline')
       .select('delivery_id, event_type, event_time')
@@ -55,105 +54,152 @@ export default async function DashboardPage() {
   }
 
   const now = new Date()
-  const greeting = now.getHours() < 12 ? 'Buenos días' : now.getHours() < 18 ? 'Buenas tardes' : 'Buenas noches'
+  const h = now.getHours()
+  const greeting = h < 12 ? 'Buenos días' : h < 18 ? 'Buenas tardes' : 'Buenas noches'
+  const firstName = user?.full_name?.split(' ')[0] ?? ''
+
+  const kpis = [
+    {
+      label: 'Pedidos hoy',
+      value: pedidosHoy ?? 0,
+      icon: Package,
+      iconBg: 'bg-sky-100',
+      iconColor: 'text-sky-600',
+      trend: null,
+    },
+    {
+      label: 'Entregas pendientes',
+      value: entregasPendientes ?? 0,
+      icon: Truck,
+      iconBg: 'bg-amber-100',
+      iconColor: 'text-amber-600',
+      trend: null,
+    },
+    {
+      label: 'Entregadas hoy',
+      value: entregadasHoy ?? 0,
+      icon: CheckCircle2,
+      iconBg: 'bg-emerald-100',
+      iconColor: 'text-emerald-600',
+      trend: null,
+    },
+    {
+      label: 'Tiempo prom. entrega',
+      value: avgMinutes !== null ? `${avgMinutes}m` : '—',
+      icon: Clock,
+      iconBg: 'bg-violet-100',
+      iconColor: 'text-violet-600',
+      sub: avgMinutes !== null ? 'promedio hoy' : 'sin entregas',
+    },
+  ]
+
+  const quickLinks = [
+    {
+      label: 'Nuevo pedido',
+      desc: 'Registrar pedido a proveedor',
+      href: '/pedidos-proveedor',
+      icon: Package,
+      color: 'text-sky-600',
+      bg: 'bg-sky-50 hover:bg-sky-100',
+    },
+    {
+      label: 'Nueva OC',
+      desc: 'Orden de compra cliente',
+      href: '/ordenes-cliente',
+      icon: Truck,
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50 hover:bg-emerald-100',
+    },
+    {
+      label: 'Programación',
+      desc: 'Asignar entregas del día',
+      href: '/almacen/programacion',
+      icon: Zap,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50 hover:bg-amber-100',
+    },
+  ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
+      {/* Greeting */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          {greeting}, {user?.full_name?.split(' ')[0]}
+        <h1 className="text-2xl font-bold text-slate-900">
+          {greeting}, {firstName} 👋
         </h1>
-        <p className="text-gray-500 mt-1">{formatDate(new Date())}</p>
+        <p className="text-slate-400 mt-1 text-sm">{formatDate(new Date())}</p>
       </div>
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Pedidos hoy</CardTitle>
-            <Package size={18} className="text-[#0066cc]" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{pedidosHoy ?? 0}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Entregas pendientes</CardTitle>
-            <Truck size={18} className="text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{entregasPendientes ?? 0}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Entregadas hoy</CardTitle>
-            <CheckCircle size={18} className="text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{entregadasHoy ?? 0}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Tiempo prom. entrega</CardTitle>
-            <Clock size={18} className="text-purple-500" />
-          </CardHeader>
-          <CardContent>
-            {avgMinutes !== null ? (
-              <>
-                <p className="text-3xl font-bold">{avgMinutes}m</p>
-                <p className="text-xs text-gray-400">Promedio de hoy</p>
-              </>
-            ) : (
-              <>
-                <p className="text-3xl font-bold">—</p>
-                <p className="text-xs text-gray-400">Sin entregas hoy</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        {kpis.map((kpi) => {
+          const Icon = kpi.icon
+          return (
+            <div key={kpi.label} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{kpi.label}</p>
+                  <p className="text-3xl font-bold text-slate-900 mt-2 leading-none">{kpi.value}</p>
+                  {kpi.sub && (
+                    <p className="text-xs text-slate-400 mt-1.5">{kpi.sub}</p>
+                  )}
+                </div>
+                <div className={`w-11 h-11 rounded-xl ${kpi.iconBg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon size={22} className={kpi.iconColor} />
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Accesos rápidos</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <a href="/pedidos-proveedor" className="p-4 rounded-lg border hover:bg-gray-50 transition-colors text-center">
-              <Package size={24} className="mx-auto mb-2 text-[#0066cc]" />
-              <p className="text-sm font-medium">Nuevo Pedido</p>
-            </a>
-            <a href="/ordenes-cliente" className="p-4 rounded-lg border hover:bg-gray-50 transition-colors text-center">
-              <Truck size={24} className="mx-auto mb-2 text-green-600" />
-              <p className="text-sm font-medium">Nueva OC</p>
-            </a>
-          </CardContent>
-        </Card>
+      {/* Quick links + System status */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+        {/* Quick actions — spans 3 cols */}
+        <div className="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Accesos rápidos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {quickLinks.map((ql) => {
+              const Icon = ql.icon
+              return (
+                <Link
+                  key={ql.href}
+                  href={ql.href}
+                  className={`group flex flex-col gap-2 p-4 rounded-xl ${ql.bg} transition-colors`}
+                >
+                  <div className={`w-9 h-9 rounded-lg bg-white/70 flex items-center justify-center shadow-sm`}>
+                    <Icon size={20} className={ql.color} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">{ql.label}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{ql.desc}</p>
+                  </div>
+                  <ArrowRight size={14} className={`${ql.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                </Link>
+              )
+            })}
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Estado del sistema</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Base de datos</span>
-              <span className="text-green-600 font-medium">✓ Conectado</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Notificaciones push</span>
-              <span className="text-gray-400">Pendiente configurar</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Modo offline</span>
-              <span className="text-green-600 font-medium">✓ Disponible</span>
-            </div>
-          </CardContent>
-        </Card>
+        {/* System status — spans 2 cols */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Estado del sistema</h2>
+          <div className="space-y-3">
+            {[
+              { label: 'Base de datos', status: 'Conectado', ok: true },
+              { label: 'Notificaciones push', status: 'Activas', ok: true },
+              { label: 'Modo offline', status: 'Disponible', ok: true },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between py-1">
+                <span className="text-sm text-slate-600">{item.label}</span>
+                <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${item.ok ? 'text-emerald-600' : 'text-slate-400'}`}>
+                  {item.ok && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                  {item.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
